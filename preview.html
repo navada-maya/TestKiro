@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IGIMS Fest 2026 – UI Preview</title>
+<style>
+  /* ── Reset & Fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#020617;--surface:#0f172a;--surface2:#1e293b;--surface3:#334155;
+    --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.05);
+    --text:#f1f5f9;--muted:#94a3b8;--dim:#475569;
+    --primary:#0ea5e9;--primary-dark:#0284c7;--primary-glow:rgba(14,165,233,.25);
+    --accent:#d946ef;--accent-glow:rgba(217,70,239,.2);
+    --green:#22c55e;--red:#ef4444;--yellow:#eab308;--orange:#f97316;
+    --purple:#a855f7;--pink:#ec4899;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif}
+
+  /* ── Page‑switcher tabs ── */
+  .page-tabs{position:fixed;top:0;left:0;right:0;z-index:1000;
+    display:flex;gap:4px;padding:8px 16px;
+    background:rgba(2,6,23,.9);backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .page-tab{padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+    background:transparent;color:var(--muted);font-size:12px;font-weight:600;
+    cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif;letter-spacing:.3px}
+  .page-tab:hover{background:rgba(255,255,255,.06);color:var(--text)}
+  .page-tab.active{background:rgba(14,165,233,.15);color:var(--primary);border-color:rgba(14,165,233,.4)}
+  .page{display:none}.page.active{display:block}
+
+  /* ── Shared utilities ── */
+  .grad-text{background:linear-gradient(135deg,#38bdf8,#a78bfa,#f472b6);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .glass{background:rgba(255,255,255,.04);backdrop-filter:blur(16px);border:1px solid var(--border)}
+  .glass2{background:rgba(255,255,255,.03);border:1px solid var(--border2)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.5px}
+  .badge-green{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25)}
+  .badge-red{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+  .badge-blue{background:rgba(14,165,233,.12);color:#7dd3fc;border:1px solid rgba(14,165,233,.25)}
+  .badge-purple{background:rgba(168,85,247,.12);color:#d8b4fe;border:1px solid rgba(168,85,247,.25)}
+  .badge-yellow{background:rgba(234,179,8,.12);color:#fde047;border:1px solid rgba(234,179,8,.25)}
+  .badge-orange{background:rgba(249,115,22,.12);color:#fdba74;border:1px solid rgba(249,115,22,.25)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;
+    font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
+  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
+    box-shadow:0 4px 20px var(--primary-glow)}
+  .btn-ghost{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+  .btn-ghost:hover{background:rgba(255,255,255,.1);color:var(--text)}
+  .grid{display:grid;gap:16px}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-4{grid-template-columns:repeat(4,1fr)}
+  .flex{display:flex;align-items:center}
+  .flex-between{display:flex;align-items:center;justify-content:space-between}
+  .gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}
+  .mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}
+  .mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}
+  .text-sm{font-size:13px}.text-xs{font-size:11px}.text-lg{font-size:18px}.text-xl{font-size:22px}
+  .text-muted{color:var(--muted)}.text-dim{color:var(--dim)}.text-primary{color:var(--primary)}
+  .text-green{color:var(--green)}.text-red{color:var(--red)}.text-yellow{color:var(--yellow)}
+  .fw-bold{font-weight:700}.fw-semi{font-weight:600}
+  .w-full{width:100%}
+  .rounded{border-radius:8px}.rounded-lg{border-radius:12px}.rounded-xl{border-radius:16px}.rounded-full{border-radius:999px}
+  .p-3{padding:12px}.p-4{padding:16px}.p-5{padding:20px}.p-6{padding:24px}
+  .px-3{padding-left:12px;padding-right:12px}
+  input,select{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);
+    padding:10px 14px;border-radius:10px;font-size:13px;outline:none;font-family:'Inter',sans-serif;width:100%}
+  input:focus,select:focus{border-color:rgba(14,165,233,.5);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+  input::placeholder{color:var(--dim)}
+  select option{background:var(--surface2)}
+  label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+</style>
+</head>
+<body>
+<!-- ══════════ PAGE SWITCHER ══════════ -->
+<div class="page-tabs">
+  <button class="page-tab active" onclick="show('home')">🏠 Homepage</button>
+  <button class="page-tab" onclick="show('events')">🎭 Events</button>
+  <button class="page-tab" onclick="show('passes')">🎟 Get Passes</button>
+  <button class="page-tab" onclick="show('mytickets')">📱 My Tickets</button>
+  <button class="page-tab" onclick="show('admin-overview')">📊 Admin – Overview</button>
+  <button class="page-tab" onclick="show('admin-tickets')">🗂 Admin – Tickets</button>
+  <button class="page-tab" onclick="show('admin-verify')">✅ Admin – Verify QR</button>
+</div>
+</body>
+</html>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 1 — HOMEPAGE
+══════════════════════════════════════════════════════ -->
+<style>
+/* Navbar */
+.navbar{position:sticky;top:48px;z-index:900;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 40px;background:rgba(2,6,23,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff}
+.nav-logo-text h3{font-size:15px;font-weight:800;letter-spacing:-.3px}
+.nav-logo-text p{font-size:10px;color:var(--dim);margin-top:1px}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s}
+.nav-link:hover,.nav-link.active{background:rgba(255,255,255,.06);color:var(--text)}
+.nav-admin{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;
+  color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.nav-admin:hover{border-color:rgba(14,165,233,.4);color:var(--primary)}
+
+/* Hero */
+.hero{position:relative;min-height:92vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;padding:80px 20px}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#020617 0%,#0c1445 50%,#020617 100%)}
+.hero-glow1{position:absolute;top:20%;left:20%;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(14,165,233,.18) 0%,transparent 70%);filter:blur(40px)}
+.hero-glow2{position:absolute;bottom:20%;right:15%;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,70,239,.12) 0%,transparent 70%);filter:blur(60px)}
+.hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(14,165,233,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(14,165,233,.04) 1px,transparent 1px);
+  background-size:60px 60px}
+.hero-inner{position:relative;z-index:2;max-width:860px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(14,165,233,.3);
+  font-size:12px;font-weight:500;color:var(--muted);margin-bottom:28px}
+.hero-badge span.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 8px #22c55e;display:inline-block}
+.hero-title{font-size:88px;font-weight:900;line-height:.95;letter-spacing:-4px;margin-bottom:12px}
+.hero-sub{font-size:38px;font-weight:900;letter-spacing:-1px}
+.hero-desc{font-size:17px;color:var(--muted);max-width:560px;margin:16px auto 0;line-height:1.6}
+.hero-meta{display:flex;align-items:center;justify-content:center;gap:32px;
+  margin:24px 0 36px;flex-wrap:wrap}
+.hero-meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
+.hero-meta-item svg{width:15px;height:15px;color:var(--primary)}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.cta-primary{padding:14px 28px;border-radius:14px;
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;border:none;
+  box-shadow:0 8px 30px rgba(14,165,233,.35);display:flex;align-items:center;gap:8px;
+  transition:all .2s;font-family:'Inter',sans-serif}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(14,165,233,.45)}
+.cta-secondary{padding:14px 28px;border-radius:14px;
+  background:rgba(255,255,255,.06);color:var(--text);
+  font-size:15px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;gap:8px;transition:all .2s;font-family:'Inter',sans-serif}
+.cta-secondary:hover{background:rgba(255,255,255,.1)}
+
+/* Category pills */
+.section{padding:72px 48px;position:relative}
+.section-title{font-size:38px;font-weight:800;margin-bottom:8px;letter-spacing:-1px}
+.section-sub{color:var(--muted);font-size:15px}
+.cat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:36px}
+.cat-card{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:16px;
+  padding:24px 16px;text-align:center;cursor:pointer;transition:all .25s}
+.cat-card:hover{transform:translateY(-6px);border-color:rgba(14,165,233,.3);
+  box-shadow:0 16px 40px rgba(14,165,233,.12)}
+.cat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin:0 auto 12px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.cat-name{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* Timeline */
+.timeline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.day-card{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:16px;padding:24px}
+.day-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.day-icon{width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.day-title{font-size:13px;font-weight:700;color:var(--text)}
+.day-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.day-events{list-style:none;display:flex;flex-direction:column;gap:8px}
+.day-event{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.dot-small{width:6px;height:6px;border-radius:50%;background:var(--primary);flex-shrink:0}
+
+/* Pass cards preview */
+.pass-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+.pass-card{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:all .25s;cursor:pointer}
+.pass-card:hover{transform:translateY(-5px)}
+.pass-card.featured{border-color:rgba(14,165,233,.4);box-shadow:0 0 40px rgba(14,165,233,.1)}
+.pass-popular{position:absolute;top:0;right:0;padding:5px 12px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;border-radius:0 16px 0 12px}
+.pass-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.pass-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.pass-price{font-size:28px;font-weight:900;margin-bottom:16px}
+.pass-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.pass-feature{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.check{width:15px;height:15px;border-radius:50%;background:rgba(14,165,233,.2);
+  color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.pass-btn{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .2s;font-family:'Inter',sans-serif}
+.pass-btn:hover{background:rgba(14,165,233,.1);border-color:rgba(14,165,233,.3);color:var(--primary)}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:20px;
+  overflow:hidden;margin:0 48px}
+.stat-item{padding:28px 24px;text-align:center;border-right:1px solid var(--border2)}
+.stat-item:last-child{border-right:none}
+.stat-value{font-size:36px;font-weight:900;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--dim);font-weight:500}
+
+/* CTA Banner */
+.cta-banner{margin:56px 48px;border-radius:24px;padding:64px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0ea5e9,#6366f1,#a855f7)}
+.cta-banner-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:40px 40px}
+.cta-banner-inner{position:relative;z-index:2}
+.cta-banner h2{font-size:42px;font-weight:900;color:#fff;margin-bottom:12px}
+.cta-banner p{color:rgba(255,255,255,.75);font-size:16px;max-width:480px;margin:0 auto 28px}
+.cta-banner-btn{padding:16px 36px;border-radius:14px;
+  background:#fff;color:#0c1445;font-size:15px;font-weight:800;
+  cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 8px 30px rgba(0,0,0,.25);transition:all .2s;font-family:'Inter',sans-serif}
+.cta-banner-btn:hover{transform:translateY(-2px)}
+
+/* Footer */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:48px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+.footer-brand p{font-size:13px;color:var(--dim);line-height:1.7;margin-top:12px;max-width:360px}
+.footer-socials{display:flex;gap:8px;margin-top:16px}
+.social-icon{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;
+  border:1px solid var(--border);transition:all .2s}
+.social-icon:hover{background:rgba(14,165,233,.1);border-color:rgba(14,165,233,.3)}
+.footer-col h4{font-size:13px;font-weight:700;margin-bottom:14px}
+.footer-link{display:block;font-size:13px;color:var(--dim);padding:4px 0;cursor:pointer;transition:color .15s}
+.footer-link:hover{color:var(--primary)}
+.footer-contact{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--dim);padding:4px 0}
+.footer-bottom{margin-top:36px;padding-top:20px;border-top:1px solid var(--border2);
+  display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
+</style>
+
+<div class="page active" id="page-home">
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">I</div>
+      <div class="nav-logo-text">
+        <h3>IGIMS <span class="grad-text">Fest</span></h3>
+        <p>2026 Edition</p>
+      </div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link active">🏠 Home</div>
+      <div class="nav-link">📅 Events</div>
+      <div class="nav-link">🎟 Get Passes</div>
+      <div class="nav-link">✨ My Tickets</div>
+    </div>
+    <div class="nav-admin">🛡 Admin</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-glow1"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Registrations Open Now — Limited Passes Available
+      </div>
+      <div class="hero-title"><span class="grad-text">IGIMS</span></div>
+      <div class="hero-sub"><span class="grad-text">FEST 2026</span></div>
+      <div class="hero-desc">The Grand Medical College Festival of Indira Gandhi Institute of Medical Sciences, Patna</div>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          March 15–17, 2026
+        </div>
+        <div class="hero-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          IGIMS Campus, Patna
+        </div>
+        <div class="hero-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          5000+ Participants
+        </div>
+      </div>
+      <div class="hero-ctas">
+        <button class="cta-primary">🎟 Get Your Pass →</button>
+        <button class="cta-secondary">Explore Events</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Categories -->
+  <div class="section">
+    <div class="section-title">What Awaits <span class="grad-text">You</span></div>
+    <div class="section-sub">Three days packed with incredible events across multiple categories</div>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🎸</div>
+        <div class="cat-name">Music Night</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)">✨</div>
+        <div class="cat-name">Cultural</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#22c55e,#10b981)">🏆</div>
+        <div class="cat-name">Sports</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#f97316,#ef4444)">🎮</div>
+        <div class="cat-name">Gaming</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#eab308,#f97316)">💃</div>
+        <div class="cat-name">Dance</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon" style="background:linear-gradient(135deg,#6366f1,#a855f7)">⚡</div>
+        <div class="cat-name">Competitions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section" style="background:rgba(255,255,255,.015)">
+    <div class="section-title">Event <span class="grad-text">Timeline</span></div>
+    <div class="section-sub">Three electrifying days of non-stop entertainment</div>
+    <div class="timeline-grid">
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-icon">🕐</div>
+          <div>
+            <div class="day-title">Day 1 – March 15</div>
+            <div class="day-sub">Opening Day</div>
+          </div>
+        </div>
+        <ul class="day-events">
+          <li class="day-event"><span class="dot-small"></span>Inauguration Ceremony</li>
+          <li class="day-event"><span class="dot-small"></span>Battle of Bands</li>
+          <li class="day-event"><span class="dot-small"></span>Art Exhibition</li>
+          <li class="day-event"><span class="dot-small"></span>Gaming Tournament (Qualifiers)</li>
+        </ul>
+      </div>
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-icon">🎉</div>
+          <div>
+            <div class="day-title">Day 2 – March 16</div>
+            <div class="day-sub">Main Day</div>
+          </div>
+        </div>
+        <ul class="day-events">
+          <li class="day-event"><span class="dot-small"></span>Dance Competition</li>
+          <li class="day-event"><span class="dot-small"></span>Sports Finals</li>
+          <li class="day-event"><span class="dot-small"></span>Stand-up Comedy Night</li>
+          <li class="day-event"><span class="dot-small"></span>DJ Night</li>
+        </ul>
+      </div>
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-icon">🌟</div>
+          <div>
+            <div class="day-title">Day 3 – March 17</div>
+            <div class="day-sub">Grand Finale</div>
+          </div>
+        </div>
+        <ul class="day-events">
+          <li class="day-event"><span class="dot-small"></span>Cultural Showcase</li>
+          <li class="day-event"><span class="dot-small"></span>Fashion Show</li>
+          <li class="day-event"><span class="dot-small"></span>Pro Night – Celebrity</li>
+          <li class="day-event"><span class="dot-small"></span>Closing Ceremony & Awards</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pass Preview -->
+  <div class="section">
+    <div class="section-title">Choose Your <span class="grad-text">Pass</span></div>
+    <div class="section-sub">Select the perfect pass for your festival experience</div>
+    <div class="pass-grid">
+      <div class="pass-card">
+        <div class="pass-icon" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)">🎓</div>
+        <div class="pass-name">Student Pass</div>
+        <div class="pass-price grad-text">₹299</div>
+        <ul class="pass-features">
+          <li class="pass-feature"><span class="check">✓</span>All events access</li>
+          <li class="pass-feature"><span class="check">✓</span>Food coupons ₹100</li>
+          <li class="pass-feature"><span class="check">✓</span>IGIMS Fest T-shirt</li>
+          <li class="pass-feature"><span class="check">✓</span>Entry to DJ Night</li>
+        </ul>
+        <button class="pass-btn">Get Pass</button>
+      </div>
+      <div class="pass-card">
+        <div class="pass-icon" style="background:linear-gradient(135deg,#22c55e,#10b981)">🛡</div>
+        <div class="pass-name">Faculty Pass</div>
+        <div class="pass-price grad-text">₹499</div>
+        <ul class="pass-features">
+          <li class="pass-feature"><span class="check">✓</span>All events access</li>
+          <li class="pass-feature"><span class="check">✓</span>Reserved seating</li>
+          <li class="pass-feature"><span class="check">✓</span>Refreshments included</li>
+          <li class="pass-feature"><span class="check">✓</span>Parking pass</li>
+        </ul>
+        <button class="pass-btn">Get Pass</button>
+      </div>
+      <div class="pass-card">
+        <div class="pass-icon" style="background:linear-gradient(135deg,#f97316,#eab308)">👥</div>
+        <div class="pass-name">Guest Pass</div>
+        <div class="pass-price grad-text">₹699</div>
+        <ul class="pass-features">
+          <li class="pass-feature"><span class="check">✓</span>All events access</li>
+          <li class="pass-feature"><span class="check">✓</span>Food coupons ₹200</li>
+          <li class="pass-feature"><span class="check">✓</span>Merchandise bag</li>
+          <li class="pass-feature"><span class="check">✓</span>Photo booth access</li>
+        </ul>
+        <button class="pass-btn">Get Pass</button>
+      </div>
+      <div class="pass-card featured">
+        <div class="pass-popular">MOST POPULAR</div>
+        <div class="pass-icon" style="background:linear-gradient(135deg,#a855f7,#ec4899)">👑</div>
+        <div class="pass-name">VIP Pass</div>
+        <div class="pass-price grad-text">₹1,999</div>
+        <ul class="pass-features">
+          <li class="pass-feature"><span class="check">✓</span>Front row seats</li>
+          <li class="pass-feature"><span class="check">✓</span>Backstage access</li>
+          <li class="pass-feature"><span class="check">✓</span>VIP lounge access</li>
+          <li class="pass-feature"><span class="check">✓</span>Premium swag kit</li>
+          <li class="pass-feature"><span class="check">✓</span>After-party access</li>
+        </ul>
+        <button class="pass-btn">Get Pass</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-value grad-text">50+</div><div class="stat-label">Events</div></div>
+    <div class="stat-item"><div class="stat-value grad-text">5000+</div><div class="stat-label">Expected Attendees</div></div>
+    <div class="stat-item"><div class="stat-value grad-text">₹5L+</div><div class="stat-label">Prize Pool</div></div>
+    <div class="stat-item"><div class="stat-value grad-text">3</div><div class="stat-label">Days of Fun</div></div>
+  </div>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="cta-banner-grid"></div>
+    <div class="cta-banner-inner">
+      <h2>Don't Miss Out!</h2>
+      <p>Limited passes available. Grab yours before they sell out and be part of Bihar's biggest medical college fest.</p>
+      <button class="cta-banner-btn">🎟 Book Your Pass Now →</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <div class="nav-logo-icon">I</div>
+          <div class="nav-logo-text">
+            <h3>IGIMS <span class="grad-text">Fest</span> 2026</h3>
+            <p>The Grand Medical College Festival</p>
+          </div>
+        </div>
+        <p>Indira Gandhi Institute of Medical Sciences presents its annual cultural extravaganza. Three days of music, dance, sports, gaming, and unforgettable memories.</p>
+        <div class="footer-socials">
+          <div class="social-icon">📸</div>
+          <div class="social-icon">🐦</div>
+          <div class="social-icon">▶️</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <div class="footer-link">Events</div>
+        <div class="footer-link">Get Passes</div>
+        <div class="footer-link">My Tickets</div>
+        <div class="footer-link">Admin</div>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <div class="footer-contact">📍 IGIMS, Patna, Bihar</div>
+        <div class="footer-contact">✉️ fest@igims.edu</div>
+        <div class="footer-contact">📞 +91 98765 43210</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 IGIMS Fest. All rights reserved.</span>
+      <span>Made with ❤️ by IGIMS Tech Team</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 2 — EVENTS
+══════════════════════════════════════════════════════ -->
+<style>
+.events-hero{padding:100px 48px 48px;text-align:center;position:relative;overflow:hidden}
+.events-hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(14,165,233,.12) 0%,transparent 70%)}
+.events-hero h1{font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:10px}
+.events-hero p{color:var(--muted);font-size:16px}
+
+.filter-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 48px 32px}
+.filter-btn{padding:8px 18px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);
+  transition:all .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
+.filter-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.filter-btn.active{background:rgba(14,165,233,.15);color:var(--primary);border-color:rgba(14,165,233,.45);
+  box-shadow:0 0 20px rgba(14,165,233,.1)}
+
+.events-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 48px 72px}
+.event-card{background:rgba(255,255,255,.025);border:1px solid var(--border2);border-radius:18px;
+  padding:22px;transition:all .25s;cursor:pointer}
+.event-card:hover{transform:translateY(-4px);border-color:rgba(14,165,233,.25);
+  box-shadow:0 12px 40px rgba(14,165,233,.08)}
+.event-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.event-emoji{font-size:38px;line-height:1}
+.event-cat-tag{font-size:10px;font-weight:600;padding:4px 10px;border-radius:999px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--dim);letter-spacing:.4px}
+.event-name{font-size:16px;font-weight:700;margin-bottom:6px;transition:color .2s}
+.event-card:hover .event-name{color:var(--primary)}
+.event-desc{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:14px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.event-meta{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.event-meta-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim)}
+.event-meta-icon{width:14px;height:14px;color:var(--primary);flex-shrink:0}
+.event-prize{padding-top:12px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:6px}
+.event-prize-label{font-size:12px;font-weight:600;color:var(--yellow)}
+</style>
+
+<div class="page" id="page-events">
+  <div class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">I</div>
+      <div class="nav-logo-text"><h3>IGIMS <span class="grad-text">Fest</span></h3><p>2026 Edition</p></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link">🏠 Home</div>
+      <div class="nav-link active">📅 Events</div>
+      <div class="nav-link">🎟 Get Passes</div>
+      <div class="nav-link">✨ My Tickets</div>
+    </div>
+    <div class="nav-admin">🛡 Admin</div>
+  </div>
+
+  <div class="events-hero">
+    <h1>Our <span class="grad-text">Events</span></h1>
+    <p>50+ events across 6 categories. Something for everyone!</p>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-btn active">✨ All Events</div>
+    <div class="filter-btn">⭐ Cultural</div>
+    <div class="filter-btn">🎸 Music</div>
+    <div class="filter-btn">💃 Dance</div>
+    <div class="filter-btn">🏆 Sports</div>
+    <div class="filter-btn">🎮 Gaming</div>
+    <div class="filter-btn">⚡ Competitions</div>
+  </div>
+
+  <div class="events-grid">
+    <!-- Row 1 -->
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">🎸</span><span class="event-cat-tag">MUSIC</span></div>
+      <div class="event-name">Battle of Bands</div>
+      <div class="event-desc">Form your band and rock the stage! Original compositions and covers both welcome.</div>
+      <div class="event-meta">
+        <div class="event-meta-row"><svg class="event-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> March 15, 2026</div>
+        <div class="event-meta-row"><svg class="event-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 6:00 PM</div>
+        <div class="event-meta-row"><svg class="event-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Main Auditorium</div>
+        <div class="event-meta-row"><svg class="event-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 3–6 members</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹50,000 + Trophies</span></div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">🕺</span><span class="event-cat-tag">DANCE</span></div>
+      <div class="event-name">Street Dance Crew Battle</div>
+      <div class="event-desc">Hip-hop, breaking, popping, locking — bring your crew and battle it out on the dance floor!</div>
+      <div class="event-meta">
+        <div class="event-meta-row">📅 March 16, 2026</div>
+        <div class="event-meta-row">🕐 4:00 PM</div>
+        <div class="event-meta-row">📍 Open Air Theatre</div>
+        <div class="event-meta-row">👥 4–8 members</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹40,000 + Trophy</span></div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">🏏</span><span class="event-cat-tag">SPORTS</span></div>
+      <div class="event-name">Cricket Tournament</div>
+      <div class="event-desc">T10 format cricket tournament. Form your college team and compete for the Champions Cup.</div>
+      <div class="event-meta">
+        <div class="event-meta-row">📅 March 15–16, 2026</div>
+        <div class="event-meta-row">🕐 8:00 AM</div>
+        <div class="event-meta-row">📍 Sports Ground</div>
+        <div class="event-meta-row">👥 11 + 4 subs</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹75,000 + Cup</span></div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">🎮</span><span class="event-cat-tag">GAMING</span></div>
+      <div class="event-name">Valorant Tournament</div>
+      <div class="event-desc">5v5 tactical shooter tournament. Assemble your team and fight for glory on the virtual battleground!</div>
+      <div class="event-meta">
+        <div class="event-meta-row">📅 March 15–16, 2026</div>
+        <div class="event-meta-row">🕐 10:00 AM</div>
+        <div class="event-meta-row">📍 Computer Lab</div>
+        <div class="event-meta-row">👥 5 players</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹30,000 + Peripherals</span></div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">🧠</span><span class="event-cat-tag">COMPETITION</span></div>
+      <div class="event-name">Medical Quiz Bowl</div>
+      <div class="event-desc">Test your medical knowledge in this intense quiz. From anatomy to pharmacology, prove you're the best!</div>
+      <div class="event-meta">
+        <div class="event-meta-row">📅 March 16, 2026</div>
+        <div class="event-meta-row">🕐 11:00 AM</div>
+        <div class="event-meta-row">📍 Lecture Hall 1</div>
+        <div class="event-meta-row">👥 Team of 3</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹20,000 + Books</span></div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-top"><span class="event-emoji">💻</span><span class="event-cat-tag">COMPETITION</span></div>
+      <div class="event-name">MedTech Hackathon</div>
+      <div class="event-desc">24-hour hackathon focused on healthcare technology solutions. Build something that matters!</div>
+      <div class="event-meta">
+        <div class="event-meta-row">📅 March 15–16, 2026</div>
+        <div class="event-meta-row">🕐 Starts 10:00 AM</div>
+        <div class="event-meta-row">📍 Innovation Lab</div>
+        <div class="event-meta-row">👥 2–4 members</div>
+      </div>
+      <div class="event-prize">🏆 <span class="event-prize-label">₹50,000 + Internships</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 3 — GET PASSES
+══════════════════════════════════════════════════════ -->
+<style>
+.passes-page{padding:100px 48px 72px}
+.passes-hero{text-align:center;margin-bottom:52px;position:relative}
+.passes-hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(14,165,233,.1) 0%,transparent 70%);pointer-events:none}
+.passes-hero h1{font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:10px}
+.passes-hero p{color:var(--muted);font-size:16px;max-width:500px;margin:0 auto}
+
+.passes-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:52px}
+.pcard{background:rgba(255,255,255,.025);border:1px solid var(--border2);border-radius:20px;
+  padding:28px;position:relative;overflow:hidden;cursor:pointer;transition:all .25s}
+.pcard:hover{transform:translateY(-6px)}
+.pcard.selected{border-color:rgba(14,165,233,.6);box-shadow:0 0 50px rgba(14,165,233,.15)}
+.pcard-popular-tag{position:absolute;top:0;right:0;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;
+  padding:5px 14px;border-radius:0 18px 0 14px}
+.pcard-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.pcard-name{font-size:15px;font-weight:700;margin-bottom:6px}
+.pcard-price{font-size:34px;font-weight:900;margin-bottom:20px}
+.pcard-price span{font-size:14px;font-weight:400;color:var(--dim)}
+.pcard-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pcard-feature{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.pcheck{width:17px;height:17px;border-radius:50%;background:rgba(14,165,233,.15);
+  border:1px solid rgba(14,165,233,.3);display:flex;align-items:center;
+  justify-content:center;font-size:9px;color:var(--primary);flex-shrink:0}
+.pcard-btn{width:100%;padding:12px;border-radius:12px;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;border:none}
+.pcard-btn-outline{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+.pcard-btn-outline:hover{background:rgba(14,165,233,.1);border-color:rgba(14,165,233,.3);color:var(--primary)}
+.pcard-btn-filled{background:linear-gradient(135deg,var(--primary),#0284c7);color:#fff;
+  box-shadow:0 4px 20px rgba(14,165,233,.3)}
+
+/* Booking form */
+.booking-form-wrap{max-width:640px;margin:0 auto;
+  background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:22px;padding:32px}
+.booking-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.booking-icon{width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.booking-title{font-size:19px;font-weight:700}
+.booking-subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-field{display:flex;flex-direction:column;gap:0}
+.form-field.full{grid-column:1/-1}
+.order-summary{background:rgba(255,255,255,.02);border:1px solid var(--border2);
+  border-radius:14px;padding:16px;margin:20px 0}
+.order-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+.order-row.total{border-top:1px solid var(--border2);margin-top:8px;padding-top:12px}
+.order-row.total .label{font-weight:600;color:var(--text)}
+.order-row .label{color:var(--muted)}
+.pay-btn{width:100%;padding:16px;border-radius:14px;
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;
+  font-size:16px;font-weight:700;cursor:pointer;border:none;
+  box-shadow:0 8px 30px rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Inter',sans-serif;transition:all .2s}
+.pay-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(14,165,233,.4)}
+.secure-note{text-align:center;font-size:11px;color:var(--dim);margin-top:12px}
+</style>
+
+<div class="page" id="page-passes">
+  <div class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">I</div>
+      <div class="nav-logo-text"><h3>IGIMS <span class="grad-text">Fest</span></h3><p>2026 Edition</p></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link">🏠 Home</div>
+      <div class="nav-link">📅 Events</div>
+      <div class="nav-link active">🎟 Get Passes</div>
+      <div class="nav-link">✨ My Tickets</div>
+    </div>
+    <div class="nav-admin">🛡 Admin</div>
+  </div>
+
+  <div class="passes-page">
+    <div class="passes-hero">
+      <h1>Get Your <span class="grad-text">Pass</span></h1>
+      <p>Secure your spot at Bihar's biggest medical college festival. Choose the pass that suits you.</p>
+    </div>
+
+    <div class="passes-cards">
+      <div class="pcard">
+        <div class="pcard-icon" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)">🎓</div>
+        <div class="pcard-name">Student Pass</div>
+        <div class="pcard-price grad-text">₹299 <span>/person</span></div>
+        <ul class="pcard-features">
+          <li class="pcard-feature"><span class="pcheck">✓</span>Access to all events</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Food court coupons (₹100)</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>IGIMS Fest T-shirt</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Entry to DJ Night</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Certificate of participation</li>
+        </ul>
+        <button class="pcard-btn pcard-btn-outline">Select Pass</button>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-icon" style="background:linear-gradient(135deg,#22c55e,#10b981)">🛡</div>
+        <div class="pcard-name">Faculty Pass</div>
+        <div class="pcard-price grad-text">₹499 <span>/person</span></div>
+        <ul class="pcard-features">
+          <li class="pcard-feature"><span class="pcheck">✓</span>Access to all events</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Reserved seating</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Refreshments included</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Faculty lounge access</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Certificate + Memento</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Parking pass</li>
+        </ul>
+        <button class="pcard-btn pcard-btn-outline">Select Pass</button>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-icon" style="background:linear-gradient(135deg,#f97316,#eab308)">👥</div>
+        <div class="pcard-name">Guest Pass</div>
+        <div class="pcard-price grad-text">₹699 <span>/person</span></div>
+        <ul class="pcard-features">
+          <li class="pcard-feature"><span class="pcheck">✓</span>Access to all events</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Food court coupons (₹200)</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Event merchandise bag</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Entry to DJ Night</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Photo booth access</li>
+        </ul>
+        <button class="pcard-btn pcard-btn-outline">Select Pass</button>
+      </div>
+
+      <div class="pcard selected">
+        <div class="pcard-popular-tag">MOST POPULAR</div>
+        <div class="pcard-icon" style="background:linear-gradient(135deg,#a855f7,#ec4899)">👑</div>
+        <div class="pcard-name">VIP Pass</div>
+        <div class="pcard-price grad-text">₹1,999 <span>/person</span></div>
+        <ul class="pcard-features">
+          <li class="pcard-feature"><span class="pcheck">✓</span>Front row seats all events</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Backstage / artist meet</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>VIP lounge + refreshments</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Premium swag kit</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Food coupons (₹500)</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Priority entry – no queues</li>
+          <li class="pcard-feature"><span class="pcheck">✓</span>Exclusive after-party</li>
+        </ul>
+        <button class="pcard-btn pcard-btn-filled">Selected ✓</button>
+      </div>
+    </div>
+
+    <!-- Booking Form -->
+    <div class="booking-form-wrap">
+      <div class="booking-header">
+        <div class="booking-icon">🎟</div>
+        <div>
+          <div class="booking-title">Complete Your Booking</div>
+          <div class="booking-subtitle">VIP Pass – ₹1,999</div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field full">
+          <label>Full Name *</label>
+          <input type="text" placeholder="Enter your full name" value="Rahul Kumar Singh"/>
+        </div>
+        <div class="form-field">
+          <label>Email Address *</label>
+          <input type="email" placeholder="your@email.com" value="rahul@igims.edu"/>
+        </div>
+        <div class="form-field">
+          <label>Phone Number *</label>
+          <input type="tel" placeholder="10-digit mobile number" value="9876543210"/>
+        </div>
+        <div class="form-field full">
+          <label>College / Institution</label>
+          <input type="text" placeholder="e.g., IGIMS Patna" value="IGIMS, Patna"/>
+        </div>
+      </div>
+
+      <div class="order-summary">
+        <div class="order-row"><span class="label">Pass Type</span><span style="color:var(--text);font-weight:600">VIP Pass</span></div>
+        <div class="order-row"><span class="label">Quantity</span><span style="color:var(--text)">1</span></div>
+        <div class="order-row total">
+          <span class="label">Total Amount</span>
+          <span style="font-size:20px;font-weight:900" class="grad-text">₹1,999</span>
+        </div>
+      </div>
+
+      <button class="pay-btn">
+        ✨ Pay ₹1,999 & Get Ticket →
+      </button>
+      <div class="secure-note">🔒 Secured by Razorpay. Your payment info is encrypted.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 4 — MY TICKETS
+══════════════════════════════════════════════════════ -->
+<style>
+.mytickets-page{padding:100px 48px 72px}
+.mytickets-hero{text-align:center;margin-bottom:40px}
+.mytickets-hero h1{font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:10px}
+.mytickets-hero p{color:var(--muted);font-size:16px}
+
+.email-search{display:flex;gap:12px;max-width:560px;margin:0 auto 48px}
+.email-input-wrap{flex:1;position:relative}
+.email-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.5}
+.email-input{padding-left:42px !important}
+.search-btn{padding:0 24px;border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;border:none;
+  font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:6px}
+
+.tickets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:900px;margin:0 auto}
+.tkt{background:rgba(255,255,255,.025);border:1px solid var(--border2);border-radius:20px;overflow:hidden}
+.tkt-header{padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
+.tkt-pass-label{font-size:11px;color:rgba(255,255,255,.75);font-weight:600;letter-spacing:.5px}
+.tkt-pass-name{font-size:18px;font-weight:800;color:#fff;margin-top:2px}
+.tkt-status-valid{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;
+  background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.tkt-status-used{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;
+  background:rgba(239,68,68,.3);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.tkt-body{padding:20px 22px}
+.tkt-qr-wrap{display:flex;justify-content:center;margin-bottom:16px}
+.tkt-qr{width:140px;height:140px;border-radius:12px;padding:8px;
+  background:var(--surface);border:1px solid var(--border2);position:relative;overflow:hidden}
+.qr-pattern{width:100%;height:100%;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr);gap:2px}
+.qr-cell{border-radius:2px}
+.tkt-id-wrap{text-align:center;margin-bottom:16px}
+.tkt-id-label{font-size:11px;color:var(--dim);margin-bottom:4px}
+.tkt-id{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--primary);background:rgba(14,165,233,.08);
+  border:1px solid rgba(14,165,233,.2);padding:6px 14px;border-radius:8px;display:inline-block}
+.tkt-details{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.tkt-detail-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.tkt-detail-icon{font-size:13px;width:20px;text-align:center;opacity:.7}
+.tkt-alert-valid{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);
+  border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:#86efac}
+.tkt-alert-used{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);
+  border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:#fca5a5}
+.tkt-sep{border:none;border-top:1px dashed rgba(255,255,255,.08);margin:0 22px}
+.tkt-footer{padding:12px 22px;display:flex;justify-content:space-between;align-items:center}
+.tkt-footer-date{font-size:11px;color:var(--dim)}
+.tkt-footer-amount{font-size:15px;font-weight:900}
+</style>
+
+<div class="page" id="page-mytickets">
+  <div class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">I</div>
+      <div class="nav-logo-text"><h3>IGIMS <span class="grad-text">Fest</span></h3><p>2026 Edition</p></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link">🏠 Home</div>
+      <div class="nav-link">📅 Events</div>
+      <div class="nav-link">🎟 Get Passes</div>
+      <div class="nav-link active">✨ My Tickets</div>
+    </div>
+    <div class="nav-admin">🛡 Admin</div>
+  </div>
+
+  <div class="mytickets-page">
+    <div class="mytickets-hero">
+      <h1>My <span class="grad-text">Tickets</span></h1>
+      <p>Enter your email to view your purchased tickets and QR codes</p>
+    </div>
+
+    <div class="email-search">
+      <div class="email-input-wrap">
+        <span class="email-input-icon">✉️</span>
+        <input class="email-input" type="email" placeholder="Enter your email address" value="rahul@igims.edu"/>
+      </div>
+      <button class="search-btn">🔍 Search</button>
+    </div>
+
+    <div class="tickets-grid">
+      <!-- Ticket 1: VIP – Valid -->
+      <div class="tkt">
+        <div class="tkt-header" style="background:linear-gradient(135deg,#a855f7,#ec4899)">
+          <div>
+            <div class="tkt-pass-label">IGIMS FEST 2026</div>
+            <div class="tkt-pass-name">VIP PASS</div>
+          </div>
+          <div class="tkt-status-valid">VALID</div>
+        </div>
+        <div class="tkt-body">
+          <div class="tkt-qr-wrap">
+            <div class="tkt-qr">
+              <!-- SVG QR-like pattern -->
+              <svg viewBox="0 0 100 100" width="124" height="124" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#0f172a"/>
+                <!-- finder top-left -->
+                <rect x="5" y="5" width="28" height="28" rx="3" fill="#0ea5e9" opacity=".9"/>
+                <rect x="9" y="9" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="13" y="13" width="12" height="12" rx="1" fill="#0ea5e9"/>
+                <!-- finder top-right -->
+                <rect x="67" y="5" width="28" height="28" rx="3" fill="#0ea5e9" opacity=".9"/>
+                <rect x="71" y="9" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="75" y="13" width="12" height="12" rx="1" fill="#0ea5e9"/>
+                <!-- finder bottom-left -->
+                <rect x="5" y="67" width="28" height="28" rx="3" fill="#0ea5e9" opacity=".9"/>
+                <rect x="9" y="71" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="13" y="75" width="12" height="12" rx="1" fill="#0ea5e9"/>
+                <!-- data dots -->
+                <rect x="40" y="5" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="48" y="5" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="56" y="5" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="40" y="13" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="56" y="13" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="5" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="13" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="21" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="5" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="21" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="5" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="13" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".3"/>
+                <rect x="40" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="48" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="56" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".9"/>
+                <rect x="64" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="72" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="80" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="88" y="40" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="40" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".3"/>
+                <rect x="56" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="72" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".9"/>
+                <rect x="88" y="48" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="40" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="48" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="64" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="80" y="56" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="40" y="64" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="56" y="64" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="72" y="64" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="88" y="64" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".3"/>
+                <rect x="40" y="72" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="48" y="72" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="56" y="72" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".9"/>
+                <rect x="64" y="72" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="80" y="72" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="40" y="80" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="56" y="80" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".3"/>
+                <rect x="72" y="80" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".7"/>
+                <rect x="88" y="80" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".5"/>
+                <rect x="40" y="88" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".6"/>
+                <rect x="48" y="88" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".8"/>
+                <rect x="64" y="88" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".4"/>
+                <rect x="80" y="88" width="5" height="5" rx="1" fill="#0ea5e9" opacity=".9"/>
+              </svg>
+            </div>
+          </div>
+          <div class="tkt-id-wrap">
+            <div class="tkt-id-label">Ticket ID</div>
+            <div class="tkt-id">IGIMS-M3X9K-V7R2</div>
+          </div>
+          <div class="tkt-details">
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">👤</span> Rahul Kumar Singh</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">✉️</span> rahul@igims.edu</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">📞</span> 9876543210</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">🎓</span> IGIMS, Patna</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">📅</span> Purchased: Jan 15, 2026</div>
+          </div>
+          <div class="tkt-alert-valid">✅ Valid for entry · Show QR at gate</div>
+        </div>
+        <hr class="tkt-sep"/>
+        <div class="tkt-footer">
+          <div class="tkt-footer-date">March 15–17, 2026 · IGIMS Patna</div>
+          <div class="tkt-footer-amount grad-text">₹1,999</div>
+        </div>
+      </div>
+
+      <!-- Ticket 2: Student – Used -->
+      <div class="tkt">
+        <div class="tkt-header" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)">
+          <div>
+            <div class="tkt-pass-label">IGIMS FEST 2026</div>
+            <div class="tkt-pass-name">STUDENT PASS</div>
+          </div>
+          <div class="tkt-status-used">USED</div>
+        </div>
+        <div class="tkt-body">
+          <div class="tkt-qr-wrap">
+            <div class="tkt-qr" style="opacity:.45;filter:grayscale(1)">
+              <svg viewBox="0 0 100 100" width="124" height="124" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#0f172a"/>
+                <rect x="5" y="5" width="28" height="28" rx="3" fill="#64748b" opacity=".9"/>
+                <rect x="9" y="9" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="13" y="13" width="12" height="12" rx="1" fill="#64748b"/>
+                <rect x="67" y="5" width="28" height="28" rx="3" fill="#64748b" opacity=".9"/>
+                <rect x="71" y="9" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="75" y="13" width="12" height="12" rx="1" fill="#64748b"/>
+                <rect x="5" y="67" width="28" height="28" rx="3" fill="#64748b" opacity=".9"/>
+                <rect x="9" y="71" width="20" height="20" rx="2" fill="#0f172a"/>
+                <rect x="13" y="75" width="12" height="12" rx="1" fill="#64748b"/>
+                <rect x="40" y="5" width="5" height="5" rx="1" fill="#64748b" opacity=".7"/>
+                <rect x="48" y="5" width="5" height="5" rx="1" fill="#64748b" opacity=".5"/>
+                <rect x="40" y="40" width="5" height="5" rx="1" fill="#64748b" opacity=".7"/>
+                <rect x="56" y="40" width="5" height="5" rx="1" fill="#64748b" opacity=".9"/>
+                <rect x="72" y="48" width="5" height="5" rx="1" fill="#64748b" opacity=".9"/>
+                <rect x="56" y="56" width="5" height="5" rx="1" fill="#64748b" opacity=".7"/>
+                <rect x="72" y="64" width="5" height="5" rx="1" fill="#64748b" opacity=".8"/>
+              </svg>
+            </div>
+          </div>
+          <div class="tkt-id-wrap">
+            <div class="tkt-id-label">Ticket ID</div>
+            <div class="tkt-id" style="color:var(--dim);background:rgba(255,255,255,.03);border-color:var(--border2)">IGIMS-A1B2C-D3E4</div>
+          </div>
+          <div class="tkt-details">
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">👤</span> Priya Sharma</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">✉️</span> priya@igims.edu</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">📞</span> 9123456789</div>
+            <div class="tkt-detail-row"><span class="tkt-detail-icon">📅</span> Purchased: Jan 20, 2026</div>
+          </div>
+          <div class="tkt-alert-used">❌ Used on March 15, 2026 at 9:32 AM</div>
+        </div>
+        <hr class="tkt-sep"/>
+        <div class="tkt-footer">
+          <div class="tkt-footer-date">March 15–17, 2026 · IGIMS Patna</div>
+          <div class="tkt-footer-amount grad-text">₹299</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 5 — ADMIN: OVERVIEW DASHBOARD
+══════════════════════════════════════════════════════ -->
+<style>
+.admin-layout{display:flex;min-height:100vh;padding-top:48px}
+.admin-sidebar{width:220px;flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);padding:24px 0;position:sticky;top:48px;height:calc(100vh - 48px)}
+.admin-brand{padding:0 20px 20px;border-bottom:1px solid var(--border2)}
+.admin-brand-icon{width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.admin-brand h3{font-size:14px;font-weight:700}
+.admin-brand p{font-size:11px;color:var(--dim);margin-top:2px}
+.admin-nav{padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.admin-nav-item{padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;gap:10px;color:var(--muted);transition:all .15s}
+.admin-nav-item:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.admin-nav-item.active{background:rgba(14,165,233,.12);color:var(--primary)}
+.admin-nav-item .nav-dot{width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:auto}
+.admin-sidebar-footer{padding:16px 20px;border-top:1px solid var(--border2);margin-top:auto}
+.admin-logout{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);cursor:pointer;
+  padding:8px 10px;border-radius:8px;transition:all .15s}
+.admin-logout:hover{background:rgba(239,68,68,.08);color:#fca5a5}
+
+.admin-main{flex:1;padding:32px;overflow-y:auto}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.admin-topbar h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.admin-topbar p{font-size:13px;color:var(--dim);margin-top:2px}
+.admin-topbar-right{display:flex;align-items:center;gap:10px}
+.admin-refresh-btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif}
+.admin-refresh-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
+
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:.07}
+.kpi.blue::before{background:var(--primary)}
+.kpi.green::before{background:var(--green)}
+.kpi.purple::before{background:var(--purple)}
+.kpi.orange::before{background:var(--orange)}
+.kpi-icon-wrap{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.kpi.blue .kpi-icon-wrap{background:rgba(14,165,233,.15)}
+.kpi.green .kpi-icon-wrap{background:rgba(34,197,94,.15)}
+.kpi.purple .kpi-icon-wrap{background:rgba(168,85,247,.15)}
+.kpi.orange .kpi-icon-wrap{background:rgba(249,115,22,.15)}
+.kpi-label{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:500}
+.kpi-value{font-size:30px;font-weight:900;line-height:1}
+.kpi-sub{font-size:11px;color:var(--dim);margin-top:6px}
+
+/* Pass breakdown */
+.pass-breakdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pb-item{background:rgba(255,255,255,.02);border:1px solid var(--border2);border-radius:14px;padding:16px}
+.pb-label{font-size:11px;color:var(--dim);font-weight:500;margin-bottom:4px;text-transform:capitalize}
+.pb-count{font-size:24px;font-weight:800;margin-bottom:2px}
+.pb-rev{font-size:11px;color:var(--dim)}
+
+/* Bar chart */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:24px}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--dim);margin-bottom:20px}
+.chart-bars{display:flex;align-items:flex-end;gap:10px;height:120px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;position:relative;min-height:4px;transition:opacity .2s}
+.chart-bar:hover{opacity:.8}
+.chart-bar-val{font-size:10px;color:var(--muted);font-weight:600}
+.chart-bar-day{font-size:10px;color:var(--dim)}
+
+/* Activity feed */
+.activity-feed{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px}
+.activity-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.activity-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.activity-item:last-child{border-bottom:none}
+.activity-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.activity-info{flex:1}
+.activity-name{font-size:13px;font-weight:600}
+.activity-detail{font-size:11px;color:var(--dim);margin-top:2px}
+.activity-time{font-size:11px;color:var(--dim)}
+</style>
+
+<div class="page" id="page-admin-overview">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="admin-brand-icon">🛡</div>
+        <h3>Admin Panel</h3>
+        <p>IGIMS Fest 2026</p>
+      </div>
+      <div class="admin-nav">
+        <div class="admin-nav-item active">📊 Overview<span class="nav-dot"></span></div>
+        <div class="admin-nav-item" onclick="show('admin-tickets')">🗂 Tickets</div>
+        <div class="admin-nav-item" onclick="show('admin-verify')">✅ Verify QR</div>
+        <div style="height:1px;background:var(--border2);margin:8px 0"></div>
+        <div class="admin-nav-item">📅 Events</div>
+        <div class="admin-nav-item">⚙️ Settings</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="admin-sidebar-footer">
+        <div class="admin-logout">🚪 Logout</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h1>Admin <span class="grad-text">Dashboard</span></h1>
+          <p>IGIMS Fest 2026 Management Panel</p>
+        </div>
+        <div class="admin-topbar-right">
+          <button class="admin-refresh-btn">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi blue">
+          <div class="kpi-icon-wrap">🎟</div>
+          <div class="kpi-label">Total Tickets</div>
+          <div class="kpi-value" style="color:var(--primary)">1,248</div>
+          <div class="kpi-sub">+42 this week</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-icon-wrap">💰</div>
+          <div class="kpi-label">Total Revenue</div>
+          <div class="kpi-value" style="color:var(--green)">₹3.82L</div>
+          <div class="kpi-sub">₹382,150 collected</div>
+        </div>
+        <div class="kpi purple">
+          <div class="kpi-icon-wrap">✅</div>
+          <div class="kpi-label">Verified Entries</div>
+          <div class="kpi-value" style="color:var(--purple)">347</div>
+          <div class="kpi-sub">27.8% entry rate</div>
+        </div>
+        <div class="kpi orange">
+          <div class="kpi-icon-wrap">⏳</div>
+          <div class="kpi-label">Pending Entry</div>
+          <div class="kpi-value" style="color:var(--orange)">901</div>
+          <div class="kpi-sub">Unused tickets</div>
+        </div>
+      </div>
+
+      <!-- Chart + Pass Breakdown side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+        <!-- Bar Chart -->
+        <div class="chart-wrap">
+          <div class="chart-title">Daily Ticket Sales</div>
+          <div class="chart-sub">Last 7 days</div>
+          <div class="chart-bars">
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">28</div>
+              <div class="chart-bar" style="height:40%;background:linear-gradient(180deg,#0ea5e9,#0284c7)"></div>
+              <div class="chart-bar-day">Mon</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">45</div>
+              <div class="chart-bar" style="height:60%;background:linear-gradient(180deg,#0ea5e9,#0284c7)"></div>
+              <div class="chart-bar-day">Tue</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">38</div>
+              <div class="chart-bar" style="height:50%;background:linear-gradient(180deg,#0ea5e9,#0284c7)"></div>
+              <div class="chart-bar-day">Wed</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">72</div>
+              <div class="chart-bar" style="height:90%;background:linear-gradient(180deg,#a855f7,#0ea5e9)"></div>
+              <div class="chart-bar-day">Thu</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">65</div>
+              <div class="chart-bar" style="height:82%;background:linear-gradient(180deg,#a855f7,#0ea5e9)"></div>
+              <div class="chart-bar-day">Fri</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">80</div>
+              <div class="chart-bar" style="height:100%;background:linear-gradient(180deg,#ec4899,#a855f7)"></div>
+              <div class="chart-bar-day">Sat</div>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">42</div>
+              <div class="chart-bar" style="height:55%;background:linear-gradient(180deg,#0ea5e9,#0284c7)"></div>
+              <div class="chart-bar-day">Sun</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pass Breakdown -->
+        <div class="chart-wrap">
+          <div class="chart-title">Pass Type Breakdown</div>
+          <div class="chart-sub">Revenue by pass category</div>
+          <div class="pass-breakdown-grid" style="margin-top:8px">
+            <div class="pb-item">
+              <div class="pb-label">🎓 Student</div>
+              <div class="pb-count" style="color:#38bdf8">724</div>
+              <div class="pb-rev">₹2.16L revenue</div>
+            </div>
+            <div class="pb-item">
+              <div class="pb-label">🛡 Faculty</div>
+              <div class="pb-count" style="color:#4ade80">198</div>
+              <div class="pb-rev">₹98.5K revenue</div>
+            </div>
+            <div class="pb-item">
+              <div class="pb-label">👥 Guest</div>
+              <div class="pb-count" style="color:#fb923c">246</div>
+              <div class="pb-rev">₹1.72L revenue</div>
+            </div>
+            <div class="pb-item">
+              <div class="pb-label">👑 VIP</div>
+              <div class="pb-count" style="color:#c084fc">80</div>
+              <div class="pb-rev">₹1.60L revenue</div>
+            </div>
+          </div>
+          <!-- Progress bars -->
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:4px"><span>Student</span><span>58%</span></div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:4px">
+                <div style="width:58%;height:100%;border-radius:4px;background:linear-gradient(90deg,#0ea5e9,#38bdf8)"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:4px"><span>VIP</span><span>6.4%</span></div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:4px">
+                <div style="width:6.4%;height:100%;border-radius:4px;background:linear-gradient(90deg,#a855f7,#ec4899)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="activity-feed">
+        <div class="activity-title">Recent Bookings</div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)">👑</div>
+          <div class="activity-info">
+            <div class="activity-name">Aditya Verma</div>
+            <div class="activity-detail">VIP Pass · ₹1,999 · IGIMS-K9P2L-X4Q7</div>
+          </div>
+          <div class="activity-time">2 min ago</div>
+          <span class="badge badge-green" style="margin-left:8px">Paid</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)">🎓</div>
+          <div class="activity-info">
+            <div class="activity-name">Sneha Gupta</div>
+            <div class="activity-detail">Student Pass · ₹299 · IGIMS-B3R8M-Y1N5</div>
+          </div>
+          <div class="activity-time">14 min ago</div>
+          <span class="badge badge-green" style="margin-left:8px">Paid</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:linear-gradient(135deg,#f97316,#eab308)">👥</div>
+          <div class="activity-info">
+            <div class="activity-name">Dr. Rajiv Mishra</div>
+            <div class="activity-detail">Guest Pass · ₹699 · IGIMS-H5T3W-Z6F9</div>
+          </div>
+          <div class="activity-time">38 min ago</div>
+          <span class="badge badge-green" style="margin-left:8px">Paid</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:linear-gradient(135deg,#22c55e,#10b981)">🛡</div>
+          <div class="activity-info">
+            <div class="activity-name">Prof. Anita Singh</div>
+            <div class="activity-detail">Faculty Pass · ₹499 · IGIMS-C2V7K-D4J1</div>
+          </div>
+          <div class="activity-time">1 hr ago</div>
+          <span class="badge badge-blue" style="margin-left:8px">Verified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 6 — ADMIN: TICKETS TABLE
+══════════════════════════════════════════════════════ -->
+<style>
+.tickets-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:20px}
+.table-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:15px;font-weight:700}
+.table-count{font-size:12px;color:var(--dim)}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border2)}
+thead th{padding:12px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);letter-spacing:.4px;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border2);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody td{padding:13px 16px;font-size:13px;white-space:nowrap}
+.td-id{font-family:'Space Mono',monospace;font-size:11px;color:var(--primary);font-weight:700}
+.td-name{font-weight:600;color:var(--text)}
+.td-email{color:var(--dim)}
+.td-pass{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;
+  font-size:11px;font-weight:600;letter-spacing:.3px}
+.pass-student{background:rgba(14,165,233,.12);color:#7dd3fc;border:1px solid rgba(14,165,233,.2)}
+.pass-faculty{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)}
+.pass-guest{background:rgba(249,115,22,.12);color:#fdba74;border:1px solid rgba(249,115,22,.2)}
+.pass-vip{background:rgba(168,85,247,.12);color:#d8b4fe;border:1px solid rgba(168,85,247,.2)}
+.td-amount{font-weight:700;color:var(--text)}
+.td-status{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+.td-status.valid{color:var(--green)}
+.td-status.used{color:var(--red)}
+.td-date{color:var(--dim);font-size:12px}
+
+.filters-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.filter-input{flex:1;min-width:200px;position:relative}
+.filter-input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.5}
+.filter-input input{padding-left:36px}
+.filter-select{width:auto;min-width:130px}
+.filter-apply-btn{padding:10px 18px;border-radius:10px;font-size:12px;font-weight:600;
+  background:rgba(14,165,233,.12);color:var(--primary);border:1px solid rgba(14,165,233,.25);
+  cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--border2)}
+.page-btn{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif}
+.page-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.page-btn.active-page{background:rgba(14,165,233,.15);color:var(--primary);border-color:rgba(14,165,233,.3)}
+.pagination-info{font-size:12px;color:var(--dim)}
+</style>
+
+<div class="page" id="page-admin-tickets">
+  <div class="admin-layout">
+    <div class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="admin-brand-icon">🛡</div>
+        <h3>Admin Panel</h3>
+        <p>IGIMS Fest 2026</p>
+      </div>
+      <div class="admin-nav">
+        <div class="admin-nav-item" onclick="show('admin-overview')">📊 Overview</div>
+        <div class="admin-nav-item active">🗂 Tickets<span class="nav-dot"></span></div>
+        <div class="admin-nav-item" onclick="show('admin-verify')">✅ Verify QR</div>
+        <div style="height:1px;background:var(--border2);margin:8px 0"></div>
+        <div class="admin-nav-item">📅 Events</div>
+        <div class="admin-nav-item">⚙️ Settings</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="admin-sidebar-footer">
+        <div class="admin-logout">🚪 Logout</div>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h1>Ticket <span class="grad-text">Management</span></h1>
+          <p>All bookings — search, filter and export</p>
+        </div>
+        <button class="admin-refresh-btn">⬇️ Export CSV</button>
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-input">
+          <span class="filter-input-icon">🔍</span>
+          <input type="text" placeholder="Search by name, email, ticket ID, phone…" value=""/>
+        </div>
+        <select class="filter-select">
+          <option>All Passes</option>
+          <option>Student</option>
+          <option>Faculty</option>
+          <option>Guest</option>
+          <option selected>VIP</option>
+        </select>
+        <select class="filter-select">
+          <option selected>All Status</option>
+          <option>Unused</option>
+          <option>Used</option>
+        </select>
+        <button class="filter-apply-btn">🔽 Filter</button>
+      </div>
+
+      <div class="tickets-table-wrap">
+        <div class="table-header">
+          <div class="table-title">All Bookings</div>
+          <div class="table-count">Showing 8 of 1,248 tickets</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>TICKET ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>PASS</th>
+              <th>AMOUNT</th>
+              <th>STATUS</th>
+              <th>DATE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-id">IGIMS-M3X9K-V7R2</td>
+              <td class="td-name">Rahul Kumar Singh</td>
+              <td class="td-email">rahul@igims.edu</td>
+              <td><span class="td-pass pass-vip">👑 VIP</span></td>
+              <td class="td-amount">₹1,999</td>
+              <td><span class="td-status valid">✅ Valid</span></td>
+              <td class="td-date">Jan 15, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-A1B2C-D3E4</td>
+              <td class="td-name">Priya Sharma</td>
+              <td class="td-email">priya@igims.edu</td>
+              <td><span class="td-pass pass-student">🎓 Student</span></td>
+              <td class="td-amount">₹299</td>
+              <td><span class="td-status used">❌ Used</span></td>
+              <td class="td-date">Jan 20, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-K9P2L-X4Q7</td>
+              <td class="td-name">Aditya Verma</td>
+              <td class="td-email">aditya.v@gmail.com</td>
+              <td><span class="td-pass pass-vip">👑 VIP</span></td>
+              <td class="td-amount">₹1,999</td>
+              <td><span class="td-status valid">✅ Valid</span></td>
+              <td class="td-date">Feb 2, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-H5T3W-Z6F9</td>
+              <td class="td-name">Dr. Rajiv Mishra</td>
+              <td class="td-email">dr.rajiv@hospital.in</td>
+              <td><span class="td-pass pass-guest">👥 Guest</span></td>
+              <td class="td-amount">₹699</td>
+              <td><span class="td-status valid">✅ Valid</span></td>
+              <td class="td-date">Feb 5, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-C2V7K-D4J1</td>
+              <td class="td-name">Prof. Anita Singh</td>
+              <td class="td-email">anita.s@igims.edu</td>
+              <td><span class="td-pass pass-faculty">🛡 Faculty</span></td>
+              <td class="td-amount">₹499</td>
+              <td><span class="td-status used">❌ Used</span></td>
+              <td class="td-date">Feb 8, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-F7N1R-S9G3</td>
+              <td class="td-name">Sneha Gupta</td>
+              <td class="td-email">sneha.g@student.edu</td>
+              <td><span class="td-pass pass-student">🎓 Student</span></td>
+              <td class="td-amount">₹299</td>
+              <td><span class="td-status valid">✅ Valid</span></td>
+              <td class="td-date">Feb 10, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-B3R8M-Y1N5</td>
+              <td class="td-name">Amit Pandey</td>
+              <td class="td-email">amit.p@igims.edu</td>
+              <td><span class="td-pass pass-student">🎓 Student</span></td>
+              <td class="td-amount">₹299</td>
+              <td><span class="td-status valid">✅ Valid</span></td>
+              <td class="td-date">Feb 14, 2026</td>
+            </tr>
+            <tr>
+              <td class="td-id">IGIMS-W6Q4E-T8U2</td>
+              <td class="td-name">Kavya Nair</td>
+              <td class="td-email">kavya.n@college.in</td>
+              <td><span class="td-pass pass-guest">👥 Guest</span></td>
+              <td class="td-amount">₹699</td>
+              <td><span class="td-status used">❌ Used</span></td>
+              <td class="td-date">Feb 20, 2026</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pagination-info">Showing 1–8 of 1,248 results</div>
+          <div style="display:flex;gap:4px">
+            <button class="page-btn">‹ Prev</button>
+            <button class="page-btn active-page">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">…</button>
+            <button class="page-btn">156</button>
+            <button class="page-btn">Next ›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE 7 — ADMIN: VERIFY QR
+══════════════════════════════════════════════════════ -->
+<style>
+.verify-wrap{max-width:540px;margin:0 auto}
+.verify-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px}
+.verify-icon-wrap{width:70px;height:70px;border-radius:20px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 18px}
+.verify-title{font-size:21px;font-weight:800;text-align:center;margin-bottom:6px}
+.verify-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px;max-width:320px;margin-left:auto;margin-right:auto}
+.verify-input-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px}
+.verify-input{font-family:'Space Mono',monospace;font-size:15px;letter-spacing:1px;font-weight:700;
+  background:rgba(255,255,255,.04);border:2px solid var(--border);
+  color:var(--primary);padding:14px 18px;border-radius:12px;width:100%}
+.verify-input:focus{border-color:rgba(14,165,233,.5);box-shadow:0 0 0 4px rgba(14,165,233,.08)}
+.verify-btn{width:100%;padding:16px;border-radius:14px;margin-top:14px;
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;border:none;
+  box-shadow:0 6px 24px rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Inter',sans-serif;transition:all .2s}
+.verify-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(14,165,233,.4)}
+
+/* Result cards */
+.result-success{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.25);
+  border-radius:16px;padding:20px;margin-top:20px}
+.result-fail{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);
+  border-radius:16px;padding:20px;margin-top:20px}
+.result-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.result-icon{font-size:32px}
+.result-headline{font-size:17px;font-weight:800}
+.result-msg{font-size:12px;color:var(--muted);margin-top:2px}
+.result-details{border-top:1px solid rgba(255,255,255,.06);padding-top:14px;
+  display:flex;flex-direction:column;gap:8px}
+.result-row{display:flex;justify-content:space-between;font-size:13px}
+.result-row .rlabel{color:var(--dim)}
+.result-row .rval{font-weight:600;color:var(--text)}
+
+/* Scan animation hint */
+.scan-hint{display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12px;color:var(--dim);margin-top:10px}
+.scan-pulse{width:8px;height:8px;border-radius:50%;background:var(--primary);
+  animation:pulse-anim 1.5s ease-in-out infinite}
+@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* Already used result */
+.result-fail-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.recent-verifications{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:20px}
+.recent-ver-title{font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.ver-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2)}
+.ver-item:last-child{border-bottom:none}
+.ver-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ver-info{flex:1}
+.ver-id{font-family:'Space Mono',monospace;font-size:11px;color:var(--primary);font-weight:700}
+.ver-name{font-size:12px;color:var(--muted);margin-top:1px}
+.ver-time{font-size:11px;color:var(--dim)}
+.ver-badge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+</style>
+
+<div class="page" id="page-admin-verify">
+  <div class="admin-layout">
+    <div class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="admin-brand-icon">🛡</div>
+        <h3>Admin Panel</h3>
+        <p>IGIMS Fest 2026</p>
+      </div>
+      <div class="admin-nav">
+        <div class="admin-nav-item" onclick="show('admin-overview')">📊 Overview</div>
+        <div class="admin-nav-item" onclick="show('admin-tickets')">🗂 Tickets</div>
+        <div class="admin-nav-item active">✅ Verify QR<span class="nav-dot"></span></div>
+        <div style="height:1px;background:var(--border2);margin:8px 0"></div>
+        <div class="admin-nav-item">📅 Events</div>
+        <div class="admin-nav-item">⚙️ Settings</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="admin-sidebar-footer">
+        <div class="admin-logout">🚪 Logout</div>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h1>Verify <span class="grad-text">QR Entry</span></h1>
+          <p>Scan QR code or enter ticket ID to grant entry</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+
+        <!-- Left: Input form -->
+        <div>
+          <div class="verify-card">
+            <div class="verify-icon-wrap">📲</div>
+            <div class="verify-title">Ticket Verification</div>
+            <div class="verify-sub">Enter the ticket ID from the attendee's QR code to verify their entry</div>
+
+            <div class="verify-input-label">Ticket ID</div>
+            <input class="verify-input" type="text" value="IGIMS-K9P2L-X4Q7" placeholder="e.g. IGIMS-XXXXX-XXXX"/>
+            <button class="verify-btn">🔍 Verify &amp; Grant Entry</button>
+            <div class="scan-hint"><span class="scan-pulse"></span> Waiting for QR scan or manual entry</div>
+          </div>
+
+          <!-- Success Result -->
+          <div class="result-success">
+            <div class="result-header">
+              <span class="result-icon">✅</span>
+              <div>
+                <div class="result-headline" style="color:#4ade80">Entry Granted!</div>
+                <div class="result-msg">Ticket verified successfully</div>
+              </div>
+            </div>
+            <div class="result-details">
+              <div class="result-row">
+                <span class="rlabel">Name</span>
+                <span class="rval">Aditya Verma</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">Pass Type</span>
+                <span class="rval" style="color:#d8b4fe">👑 VIP Pass</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">Email</span>
+                <span class="rval">aditya.v@gmail.com</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">College</span>
+                <span class="rval">IGIMS, Patna</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">Verified At</span>
+                <span class="rval">March 15, 2026 · 9:47 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Already-used result + recent log -->
+        <div>
+          <!-- Already used result example -->
+          <div class="result-fail" style="margin-top:0">
+            <div class="result-fail-header">
+              <span class="result-icon">❌</span>
+              <div>
+                <div class="result-headline" style="color:#f87171">Entry Denied!</div>
+                <div class="result-msg">This ticket has already been used</div>
+              </div>
+            </div>
+            <div class="result-details">
+              <div class="result-row">
+                <span class="rlabel">Name</span>
+                <span class="rval">Priya Sharma</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">Pass Type</span>
+                <span class="rval" style="color:#7dd3fc">🎓 Student Pass</span>
+              </div>
+              <div class="result-row">
+                <span class="rlabel">Previously Used</span>
+                <span class="rval" style="color:#f87171">March 15, 2026 · 8:12 AM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent verifications log -->
+          <div class="recent-verifications" style="margin-top:16px">
+            <div class="recent-ver-title">Recent Verifications Today</div>
+            <div class="ver-item">
+              <div class="ver-dot" style="background:var(--green)"></div>
+              <div class="ver-info">
+                <div class="ver-id">IGIMS-K9P2L-X4Q7</div>
+                <div class="ver-name">Aditya Verma · VIP Pass</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                <span class="ver-time">9:47 AM</span>
+                <span class="ver-badge badge-green">Granted</span>
+              </div>
+            </div>
+            <div class="ver-item">
+              <div class="ver-dot" style="background:var(--red)"></div>
+              <div class="ver-info">
+                <div class="ver-id">IGIMS-A1B2C-D3E4</div>
+                <div class="ver-name">Priya Sharma · Student Pass</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                <span class="ver-time">9:31 AM</span>
+                <span class="ver-badge badge-red">Denied</span>
+              </div>
+            </div>
+            <div class="ver-item">
+              <div class="ver-dot" style="background:var(--green)"></div>
+              <div class="ver-info">
+                <div class="ver-id">IGIMS-C2V7K-D4J1</div>
+                <div class="ver-name">Prof. Anita Singh · Faculty</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                <span class="ver-time">9:18 AM</span>
+                <span class="ver-badge badge-green">Granted</span>
+              </div>
+            </div>
+            <div class="ver-item">
+              <div class="ver-dot" style="background:var(--green)"></div>
+              <div class="ver-info">
+                <div class="ver-id">IGIMS-H5T3W-Z6F9</div>
+                <div class="ver-name">Dr. Rajiv Mishra · Guest</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                <span class="ver-time">9:05 AM</span>
+                <span class="ver-badge badge-green">Granted</span>
+              </div>
+            </div>
+            <div class="ver-item">
+              <div class="ver-dot" style="background:var(--green)"></div>
+              <div class="ver-info">
+                <div class="ver-id">IGIMS-M3X9K-V7R2</div>
+                <div class="ver-name">Rahul Kumar Singh · VIP</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                <span class="ver-time">8:58 AM</span>
+                <span class="ver-badge badge-green">Granted</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats mini -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
+            <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:var(--green)">342</div>
+              <div style="font-size:11px;color:var(--dim);margin-top:2px">Granted Today</div>
+            </div>
+            <div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:var(--red)">5</div>
+              <div style="font-size:11px;color:var(--dim);margin-top:2px">Denied Today</div>
+            </div>
+            <div style="background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.2);border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:var(--primary)">347</div>
+              <div style="font-size:11px;color:var(--dim);margin-top:2px">Total Scans</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT — page switcher
+══════════════════════════════════════════════════════ -->
+<script>
+const PAGE_MAP = {
+  'home':           'page-home',
+  'events':         'page-events',
+  'passes':         'page-passes',
+  'mytickets':      'page-mytickets',
+  'admin-overview': 'page-admin-overview',
+  'admin-tickets':  'page-admin-tickets',
+  'admin-verify':   'page-admin-verify',
+};
+const TAB_MAP = {
+  'home':           0,
+  'events':         1,
+  'passes':         2,
+  'mytickets':      3,
+  'admin-overview': 4,
+  'admin-tickets':  5,
+  'admin-verify':   6,
+};
+
+function show(key) {
+  // hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // deactivate all tabs
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  // show target
+  const pageId = PAGE_MAP[key];
+  if (pageId) document.getElementById(pageId).classList.add('active');
+  // activate tab
+  const tabIdx = TAB_MAP[key];
+  if (tabIdx !== undefined) {
+    const tabs = document.querySelectorAll('.page-tab');
+    if (tabs[tabIdx]) tabs[tabIdx].classList.add('active');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Activate correct tab on page-tab clicks (already wired via onclick)
+// Also wire nav-link clicks inside pages
+document.querySelectorAll('.nav-link').forEach(el => {
+  el.addEventListener('click', () => {
+    const txt = el.textContent.trim();
+    if (txt.includes('Home'))       show('home');
+    if (txt.includes('Events'))     show('events');
+    if (txt.includes('Passes'))     show('passes');
+    if (txt.includes('Tickets'))    show('mytickets');
+  });
+});
+document.querySelectorAll('.nav-admin').forEach(el => {
+  el.addEventListener('click', () => show('admin-overview'));
+});
+</script>
+</body>
+</html>
